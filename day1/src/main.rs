@@ -1,26 +1,25 @@
 fn part1(input: &str) {
-    let mut fuel_vec: Vec<u32> = Vec::new();
-    for line in input.lines() {
-        let value = line.parse::<u32>().unwrap();
-        let fuel = (value / 3) - 2;
-        fuel_vec.push(fuel);
-    }
-    let sum: u32 = fuel_vec.iter().sum();
+    let sum: u32 = input
+        .lines()
+        .map(|line| (line.parse::<u32>().unwrap() / 3) - 2)
+        .sum();
     println!("Part1: {}", sum);
 }
 
 fn part2(input: &str) {
-    let mut fuel_vec: Vec<i32> = Vec::new();
-    for line in input.lines() {
-        let fuel_fn = |value: i32| -> i32 { (value / 3) - 2 };
-        let value = line.parse::<i32>().unwrap();
-        let mut fuel = fuel_fn(value);
-        while fuel > 0 {
-            fuel_vec.push(fuel);
-            fuel = fuel_fn(fuel);
-        }
-    }
-    let sum: i32 = fuel_vec.iter().sum();
+    let sum: i32 = input
+        .lines()
+        .map(|line| {
+            let calc_fn = |value: i32| -> i32 { (value / 3) - 2 };
+            let mut base = calc_fn(line.parse::<i32>().unwrap());
+            let mut total = 0;
+            while base > 0 {
+                total += base;
+                base = calc_fn(base);
+            }
+            total
+        })
+        .sum();
     println!("Part2: {}", sum);
 }
 
