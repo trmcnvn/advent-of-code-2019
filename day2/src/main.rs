@@ -1,67 +1,47 @@
-fn part1(input: &str) {
-    let mut integers = input
-        .replace("\r\n", "")
+fn parse_input(input: &str) -> Vec<usize> {
+    input
+        .trim()
         .split(',')
         .map(|v| v.parse::<usize>().unwrap())
-        .collect::<Vec<_>>();
-    integers[1] = 12;
-    integers[2] = 2;
+        .collect()
+}
 
-    let mut index = 0;
+fn run_program(integers: &mut [usize]) {
+    let mut idx = 0;
     loop {
-        let a = integers[index + 1];
-        let b = integers[index + 2];
-        let c = integers[index + 3];
-        match integers[index] {
+        let params = integers.get(idx + 1..=idx + 3).unwrap();
+        match integers[idx] {
             1 => {
-                integers[c] = integers[a] + integers[b];
+                integers[params[2]] = integers[params[0]] + integers[params[1]];
             }
             2 => {
-                integers[c] = integers[a] * integers[b];
+                integers[params[2]] = integers[params[0]] * integers[params[1]];
             }
             99 => break,
             _ => unreachable!(),
         };
-        index += 4;
+        idx += 4;
     }
+}
 
+fn part1(input: &str) {
+    let mut integers = parse_input(input);
+    integers[1] = 12;
+    integers[2] = 2;
+    run_program(&mut integers);
     println!("Part 1: {}", integers[0]);
 }
 
 fn part2(input: &str) {
-    let integers = input
-        .replace("\r\n", "")
-        .split(',')
-        .map(|v| v.parse::<usize>().unwrap())
-        .collect::<Vec<_>>();
-
+    let integers = parse_input(input);
     for noun in 0..=99 {
         for verb in 0..=99 {
             let mut memory = integers.clone();
             memory[1] = noun;
             memory[2] = verb;
-
-            let mut index = 0;
-            loop {
-                let a = memory[index + 1];
-                let b = memory[index + 2];
-                let c = memory[index + 3];
-                match memory[index] {
-                    1 => {
-                        memory[c] = memory[a] + memory[b];
-                    }
-                    2 => {
-                        memory[c] = memory[a] * memory[b];
-                    }
-                    99 => break,
-                    _ => unreachable!(),
-                };
-                index += 4;
-            }
-
+            run_program(&mut memory);
             if memory[0] == 19_690_720 {
-                println!("Part 2: {}", 100 * noun + verb);
-                return;
+                return println!("Part 2: {}", 100 * noun + verb);
             }
         }
     }
