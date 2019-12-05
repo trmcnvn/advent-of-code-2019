@@ -1,6 +1,23 @@
 use std::collections::HashMap;
 
 type Positions = HashMap<(isize, isize), usize>;
+
+fn parse_input(input: &str) -> Vec<Positions> {
+    input
+        .lines()
+        .map(|w| w.split(','))
+        .map(|w| {
+            w.flat_map(|a| {
+                let direction = a.chars().next().unwrap();
+                let steps = a[1..].parse::<usize>().unwrap();
+                vec![direction; steps]
+            })
+            .collect::<Vec<_>>()
+        })
+        .map(|w| parse_actions(&w))
+        .collect()
+}
+
 fn parse_actions(actions: &[char]) -> Positions {
     let mut positions = Positions::new();
     let mut xys = (0isize, 0isize, 0usize);
@@ -19,19 +36,7 @@ fn parse_actions(actions: &[char]) -> Positions {
 }
 
 fn part1(input: &str) -> usize {
-    let wires: Vec<_> = input
-        .lines()
-        .map(|w| w.split(','))
-        .map(|w| {
-            w.flat_map(|a| {
-                let direction = a.chars().next().unwrap();
-                let steps = a[1..].parse::<usize>().unwrap();
-                vec![direction; steps]
-            })
-            .collect::<Vec<_>>()
-        })
-        .map(|w| parse_actions(&w))
-        .collect();
+    let wires = parse_input(input);
     wires[0]
         .keys()
         .filter(|k| wires[1].contains_key(&k))
@@ -41,19 +46,7 @@ fn part1(input: &str) -> usize {
 }
 
 fn part2(input: &str) -> usize {
-    let wires: Vec<_> = input
-        .lines()
-        .map(|w| w.split(','))
-        .map(|w| {
-            w.flat_map(|a| {
-                let direction = a.chars().next().unwrap();
-                let steps = a[1..].parse::<usize>().unwrap();
-                vec![direction; steps]
-            })
-            .collect::<Vec<_>>()
-        })
-        .map(|w| parse_actions(&w))
-        .collect();
+    let wires = parse_input(input);
     wires[0]
         .keys()
         .filter(|k| wires[1].contains_key(&k))
